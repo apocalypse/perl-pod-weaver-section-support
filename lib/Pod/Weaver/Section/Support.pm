@@ -31,7 +31,7 @@ sub weave_section {
 			content => '',
 			children => [
 				Pod::Elemental::Element::Pod5::Ordinary->new( {
-					content => 'CPAN AnnoCPAN RT CPANTS Kwalitee',
+					content => 'CPAN AnnoCPAN RT CPANTS Kwalitee diff dist',
 				} ),
 			],
 		} ),
