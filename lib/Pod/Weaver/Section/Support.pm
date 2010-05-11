@@ -15,9 +15,7 @@ sub weave_section {
 
 	# Is this the main module POD?
 	my $main = $zilla->main_module->name;
-	my $is_main = $main eq $input->{filename} ? 1 : 0;
-
-	return if ! $is_main;
+	return if $main ne $input->{filename};
 
 	my $dist = $zilla->name;
 	my $first_char = substr( $dist, 0, 1 );
@@ -130,5 +128,7 @@ because it needs the data from the dzil object.
 
 This is added B<ONLY> to the main module's POD, because it would be a waste of space to add it to all
 modules in the dist.
+
+For an example of what the hunk looks like, look at the L</SUPPORT> section in this POD :)
 
 =cut
