@@ -120,6 +120,8 @@ sub _make_item {
 
 =pod
 
+=for :stopwords dzil
+
 =head1 DESCRIPTION
 
 This section plugin will produce a hunk of pod that lists the common support websites
