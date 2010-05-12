@@ -9,6 +9,7 @@ use Pod::Weaver::Role::Section 3.100710;
 with 'Pod::Weaver::Role::Section';
 
 sub weave_section {
+	## no critic ( ProhibitAccessOfPrivateData )
 	my ($self, $document, $input) = @_;
 
 	my $zilla = $input->{zilla} or return;
@@ -28,10 +29,11 @@ sub weave_section {
 		# Add the stopwords so the spell checker won't complain!
 		Pod::Elemental::Element::Pod5::Region->new( {
 			format_name => 'stopwords',
+			is_pod => 0,
 			content => '',
 			children => [
 				Pod::Elemental::Element::Pod5::Ordinary->new( {
-					content => 'CPAN AnnoCPAN RT CPANTS Kwalitee diff dist',
+					content => join( "\n", qw( CPAN AnnoCPAN RT CPANTS Kwalitee diff dist ) ),
 				} ),
 			],
 		} ),
@@ -120,7 +122,16 @@ sub _make_item {
 
 =pod
 
-=for :stopwords dzil
+=begin stopwords
+
+dist
+
+dzil
+
+=end stopwords
+
+=for Pod::Coverage
+weave_section
 
 =head1 DESCRIPTION
 
