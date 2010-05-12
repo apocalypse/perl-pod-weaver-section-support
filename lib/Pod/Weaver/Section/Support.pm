@@ -122,16 +122,9 @@ sub _make_item {
 
 =pod
 
-=begin stopwords
+=for stopwords dist dzil
 
-dist
-
-dzil
-
-=end stopwords
-
-=for Pod::Coverage
-weave_section
+=for Pod::Coverage weave_section
 
 =head1 DESCRIPTION
 
