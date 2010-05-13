@@ -2,38 +2,43 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
-* 0.008
+0.009
+	Released: 2010-05-13 01:41:59 UTC
+
+	another fake release
+
+0.008
 	Released: 2010-05-12 04:50:01 UTC
 
-* 0.007
+0.007
 	Released: 2010-05-11 21:12:28 UTC
 
-* 0.006
+0.006
 	Released: 2010-05-11 17:05:55 UTC
 
 	Tweaked the POD a little, and make another release...
 
-* 0.005
+0.005
 	Released: 2010-05-11 06:26:29 UTC
 
 	real CPAN release, ha!
 
-* 0.004
+0.004
 	Released: 2010-05-11 06:25:00 UTC
 
 	add example weaver.ini
 
-* 0.003
+0.003
 	Released: 2010-05-11 06:16:15 UTC
 
 	yet another test release
 
-* 0.002
+0.002
 	Released: 2010-05-11 06:13:52 UTC
 
 	test release
 
-* 0.001
+0.001
 	Released: 2010-05-11 03:29:40 UTC
 
 	initial release
