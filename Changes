@@ -2,6 +2,11 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+0.010
+	Released: 2010-05-28 17:41:54 UTC
+
+	fixed the way the stopwords were added to the POD
+
 0.009
 	Released: 2010-05-13 01:41:59 UTC
 
