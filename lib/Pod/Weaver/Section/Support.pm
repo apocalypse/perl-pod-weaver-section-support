@@ -29,7 +29,7 @@ sub weave_section {
 		# Add the stopwords so the spell checker won't complain!
 		Pod::Elemental::Element::Pod5::Region->new( {
 			format_name => 'stopwords',
-			is_pod => 0,
+			is_pod => 1,
 			content => '',
 			children => [
 				Pod::Elemental::Element::Pod5::Ordinary->new( {
