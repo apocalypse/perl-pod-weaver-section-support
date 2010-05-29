@@ -2,6 +2,8 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+	Updated the way the repository was taken from the dzil metadata
+
 0.010
 	Released: 2010-05-28 17:41:54 UTC
 

@@ -25,6 +25,11 @@ sub weave_section {
 	$perl_name =~ s/-/::/g;
 	my $repository = $zilla->distmeta->{resources}{repository} or die 'repository not present in distmeta';
 
+	# for dzil v3 with CPAN Meta v2
+	if ( ref $repository ) {
+		$repository = $repository->{url};
+	}
+
 	$document->children->push(
 		# Add the stopwords so the spell checker won't complain!
 		Pod::Elemental::Element::Pod5::Region->new( {
@@ -130,7 +135,8 @@ sub _make_item {
 
 This section plugin will produce a hunk of pod that lists the common support websites
 and an explanation of how to report bugs. It will do this only if it is being built with L<Dist::Zilla>
-because it needs the data from the dzil object.
+because it needs the data from the dzil object. You would need to use L<Dist::Zilla::Plugin::Repository>
+in your F<dist.ini>.
 
 This is added B<ONLY> to the main module's POD, because it would be a waste of space to add it to all
 modules in the dist.
