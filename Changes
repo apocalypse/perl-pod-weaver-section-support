@@ -2,7 +2,11 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
-	Updated the way the repository was taken from the dzil metadata
+1.000
+	Released: 2010-05-30 18:03:49 UTC
+
+	Work with CPAN Meta v2 by recognizing the repository
+	Make the repository hunk of POD optional
 
 0.010
 	Released: 2010-05-28 17:41:54 UTC
