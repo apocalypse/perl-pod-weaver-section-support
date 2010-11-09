@@ -61,6 +61,9 @@ sub weave_section {
 			}
 		}
 
+		# warn the user if any of the desired links are blank
+		$zilla->log_fatal("Expected repository link not found") if grep { !$_ } @repo_links;
+
 		if ( $self->repository_content ){
 			chomp($repository_content = $self->repository_content);
 			$repository_content .= "\n\n";
@@ -194,6 +197,9 @@ Valid options are: "url", "web", "both", or "none".
 "none" will skip the repository item entirely.
 
 The default is "url".
+
+An error will be thrown if a specified link is not found
+because if you said that you wanted it you probably expect it to be there.
 
 =item * repository_content
 
