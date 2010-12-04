@@ -61,14 +61,13 @@ EOPOD
 							content => '4',
 							children => [
 								_make_item( 'Search CPAN', "L<http://search.cpan.org/dist/$dist>" ),
+								_make_item( 'RT: CPAN\'s Bug Tracker', "L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>" ),
 								_make_item( 'AnnoCPAN: Annotated CPAN documentation', "L<http://annocpan.org/dist/$dist>" ),
 								_make_item( 'CPAN Ratings', "L<http://cpanratings.perl.org/d/$dist>" ),
 								_make_item( 'CPAN Forum', "L<http://cpanforum.com/dist/$dist>" ),
-								_make_item( 'RT: CPAN\'s Bug Tracker', "L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>" ),
 								_make_item( 'CPANTS Kwalitee', "L<http://cpants.perl.org/dist/overview/$dist>" ),
 								_make_item( 'CPAN Testers Results', "L<http://cpantesters.org/distro/$first_char/$dist.html>" ),
 								_make_item( 'CPAN Testers Matrix', "L<http://matrix.cpantesters.org/?dist=$dist>" ),
-								_add_repo( $repository ),
 								Pod::Elemental::Element::Pod5::Command->new( {
 									command => 'back',
 									content => '',
@@ -90,6 +89,7 @@ EOPOD
 						} ),
 					],
 				} ),
+				_add_repo( $repository ),
 			],
 		} ),
 	);
@@ -129,7 +129,15 @@ EOPOD
 		$text .= "L<$repo>";
 	}
 
-	return _make_item( 'Source Code Repository', $text );
+	return Pod::Elemental::Element::Nested->new( {
+		command => 'head2',
+		content => 'Source Code',
+		children => [
+			Pod::Elemental::Element::Pod5::Ordinary->new( {
+				content => $text,
+			} ),
+		],
+	} ),
 }
 
 sub _make_item {
