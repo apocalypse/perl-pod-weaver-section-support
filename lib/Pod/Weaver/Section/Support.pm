@@ -26,11 +26,6 @@ sub weave_section {
 	my $repository;
 	if ( exists $zilla->distmeta->{resources}{repository} ) {
 		$repository = $zilla->distmeta->{resources}{repository};
-
-		# for dzil v3 with CPAN Meta v2
-		if ( ref $repository ) {
-			$repository = $repository->{url};
-		}
 	}
 
 	$document->children->push(
@@ -73,17 +68,7 @@ EOPOD
 								_make_item( 'CPANTS Kwalitee', "L<http://cpants.perl.org/dist/overview/$dist>" ),
 								_make_item( 'CPAN Testers Results', "L<http://cpantesters.org/distro/$first_char/$dist.html>" ),
 								_make_item( 'CPAN Testers Matrix', "L<http://matrix.cpantesters.org/?dist=$dist>" ),
-							( defined $repository ?
-								_make_item( 'Source Code Repository', <<EOPOD
-The code is open to the world, and available for you to hack on. Please feel free to browse it and play
-with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
-from your repository :)
-
-L<$repository>
-EOPOD
-
-								)
-: () ),
+								_add_repo( $repository ),
 								Pod::Elemental::Element::Pod5::Command->new( {
 									command => 'back',
 									content => '',
@@ -108,6 +93,43 @@ EOPOD
 			],
 		} ),
 	);
+}
+
+sub _add_repo {
+	my( $repo ) = @_;
+
+	return () if ! defined $repo;
+
+	my $text = <<'EOPOD';
+The code is open to the world, and available for you to hack on. Please feel free to browse it and play
+with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
+from your repository :)
+
+EOPOD
+
+	# for dzil v3 with CPAN Meta v2
+	if ( ref $repo ) {
+		# add the web url
+		if ( exists $repo->{web} ) {
+			$text .= 'L<' . $repo->{web} . ">\n\n";
+		}
+
+		# do we have a type?
+		if ( exists $repo->{type} ) {
+			if ( $repo->{type} eq 'git' ) {
+				$text .= '  git clone ' . $repo->{url};
+			} else {
+				# TODO add support for other formats? I'm lazy now hah
+				$text .= '  ' . $repo->{url};
+			}
+		} else {
+			$text .= '  ' . $repo->{url};
+		}
+	} else {
+		$text .= "L<$repo>";
+	}
+
+	return _make_item( 'Source Code Repository', $text );
 }
 
 sub _make_item {
