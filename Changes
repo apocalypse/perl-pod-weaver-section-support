@@ -2,6 +2,9 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+	Add more attributes to control the repository text/link ( thanks RWSTAUNER! )
+	Reorganized the layout of the generated POD
+
 1.000
 	Released: 2010-05-30 18:03:49 UTC
 
