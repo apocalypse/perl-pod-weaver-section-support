@@ -2,8 +2,13 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
-	Add more attributes to control the repository text/link ( thanks RWSTAUNER! )
+	Add attributes to control the repository section ( thanks RWSTAUNER! )
 	Reorganized the layout of the generated POD
+	Add attribute to control the website links ( thanks GETTY! )
+	Add attributes for new irc section ( thanks GETTY! )
+	Add attribute to control the bugs section ( thanks GETTY! )
+	Add attribute to enable/disable perldoc section ( thanks GETTY! )
+	Add attribute to enable/disable SUPPORT section for all modules ( thanks GETTY! )
 
 1.000
 	Released: 2010-05-30 18:03:49 UTC
