@@ -135,8 +135,9 @@ has irc_content => (
 	isa => 'Str',
 	default => <<'EOPOD',
 You can get live help by using IRC ( Internet Relay Chat ). If you don't know what IRC is,
-please read this excellent guide: L<http://en.wikipedia.org/wiki/Internet_Relay_Chat>.
-You can join those networks/channels and get help:
+please read this excellent guide: L<http://en.wikipedia.org/wiki/Internet_Relay_Chat>. Please
+be courteous and patient when talking to us, as we might be busy or sleeping! You can join
+those networks/channels and get help:
 EOPOD
 
 );
@@ -241,7 +242,7 @@ sub _add_bugs {
 	my $text;
 	if ( $self->bugs eq 'rt' ) {
 		$text = <<"EOPOD";
-Please report any bugs or feature requests to C<bug-$lc_dist at rt.cpan.org>, or through
+Please report any bugs or feature requests by email to C<bug-$lc_dist at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=$dist>.  I will be
 notified, and then you'll automatically be notified of progress on your bug as I make changes.
 EOPOD
@@ -257,12 +258,15 @@ EOPOD
 
 		if ( defined $web ) {
 			$text .= "on the bugtracker website L<$web>";
-			$text .= defined $mailto ? " or " : "\n";
+			$text .= defined $mailto ? " or " : ".";
 		}
 
 		if ( defined $mailto ) {
-			$text .= "by email to '$mailto'\.\n";
+			$text .= "by email to '$mailto'.";
 		}
+
+		$text .= " I will be notified, and then you'll automatically ";
+		$text .= "be notified of progress on your bug as I make changes.";
 	}
 
 	return Pod::Elemental::Element::Nested->new( {
@@ -324,14 +328,31 @@ sub _add_irc {
 				push( @nicks, $e );
 			}
 		}
-		my $text = "You can connect to the irc server at '$net'";
+		my $text = "You can connect to the server at '$net'";
 		if ( @chans ) {
-			$text .= " and join those channels: ";
-			$text .= join( ' , ', @chans );
+			if ( @chans > 1 ) {
+				$text .= " and join those channels: ";
+				$text .= join( ' , ', @chans );
+			} else {
+				$text .= " and join this channel: $chans[0]";
+			}
 		}
 		if ( @nicks ) {
-			$text .= " and talk to those people for help: ";
-			$text .= join( ' , ', @nicks );
+			if ( @chans ) {
+				$text .= " then";
+			} else {
+				$text .= " and";
+			}
+
+			if ( @nicks > 1 ) {
+				$text .= " talk to those people for help: ";
+				$text .= join( ' , ', @nicks );
+			} else {
+				$text .= " talk to this person for help: $nicks[0]";
+			}
+		}
+		if ( ! @nicks ) {
+			$text .= " to get help";
 		}
 		$text .= '.';
 
@@ -482,7 +503,8 @@ sub _add_websites {
 		children => [
 			Pod::Elemental::Element::Pod5::Ordinary->new( {
 				content => <<EOPOD,
-The following websites have more information about this module, and may be of help to you.
+The following websites have more information about this module, and may be of help to you. As always,
+in addition to those websites please use your favorite search engine to discover more resources.
 EOPOD
 			} ),
 			Pod::Elemental::Element::Nested->new( {
