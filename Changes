@@ -2,6 +2,9 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+1.001
+	Released: 2010-12-08 07:35:41 UTC
+
 	Add attributes to control the repository section ( thanks RWSTAUNER! )
 	Reorganized the layout of the generated POD
 	Add attribute to control the website links ( thanks GETTY! )
