@@ -2,6 +2,8 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+	Fix a few typos in the POD
+
 1.001
 	Released: 2010-12-08 07:35:41 UTC
 

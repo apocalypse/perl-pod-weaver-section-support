@@ -597,7 +597,7 @@ sub _make_item {
 
 =for stopwords dist dzil repo
 
-=for Pod::Coverage weave_section mvp_bundle_config
+=for Pod::Coverage weave_section mvp_multivalue_args
 
 =head1 DESCRIPTION
 
