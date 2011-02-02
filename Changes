@@ -3,6 +3,11 @@ Revision history for Pod::Weaver::Section::Support
 {{$NEXT}}
 
 	Fix a few typos in the POD
+	Add email section to contact the author
+	Make the perldoc section a proper header
+	Tweaked the wording of the bugs section ( thanks DAGOLDEN! )
+	Add attribute to specify the bugs content ( thanks DAGOLDEN! )
+	Add attribute to specify the website content
 
 1.001
 	Released: 2010-12-08 07:35:41 UTC

@@ -23,6 +23,20 @@ has all_modules => (
 	default => 0,
 );
 
+=attr perldoc
+
+Specify if you want the paragraph explaining about perldoc to be displayed or not.
+
+The default is true.
+
+=cut
+
+has perldoc => (
+	is => 'ro',
+	isa => 'Bool',
+	default => 1,
+);
+
 =attr bugs
 
 Specify the bugtracker you want to use. You can use the CPAN RT tracker or your own, specified in the metadata.
@@ -31,7 +45,8 @@ Valid options are: "rt", "metadata", or "none"
 
 If you pick the "rt" option, this module will generate a predefined block of text explaining how to use the RT system.
 
-If you pick the "metadata" option, this module will check the L<Dist::Zilla> metadata for the bugtracker to display.
+If you pick the "metadata" option, this module will check the L<Dist::Zilla> metadata for the bugtracker to display. Be sure
+to verify that your metadata contains both 'web' and 'mailto' keys if you want to use them in the content!
 
 The default is "rt".
 
@@ -49,18 +64,25 @@ The default is "rt".
 	no Moose::Util::TypeConstraints;
 }
 
-=attr perldoc
+=attr bugs_content
 
-Specify if you want the paragraph explaining about perldoc to be displayed or not.
+Specify the content for the bugs section.
 
-The default is true.
+Please put the "{EMAIL}" and "{WEB}" placeholders somewhere!
+
+The default is a sufficient explanation (see L</SUPPORT>).
 
 =cut
 
-has perldoc => (
+has bugs_content => (
 	is => 'ro',
-	isa => 'Bool',
-	default => 1,
+	isa => 'Str',
+	default => <<'EOPOD',
+Please report any bugs or feature requests by email to {EMAIL}, or through
+the web interface at {WEB}. You will be automatically notified of any
+progress on the request by the system.
+EOPOD
+
 );
 
 =attr websites
@@ -98,6 +120,24 @@ has websites => (
 	is => 'ro',
 	isa => 'ArrayRef[Str]',
 	default => sub { [ 'all' ] },
+);
+
+=attr websites_content
+
+Specify the content to be displayed before the website list.
+
+The default is a sufficient explanation (see L</SUPPORT>).
+
+=cut
+
+has websites_content => (
+	is => 'ro',
+	isa => 'Str',
+	default => <<'EOPOD',
+The following websites have more information about this module, and may be of help to you. As always,
+in addition to those websites please use your favorite search engine to discover more resources.
+EOPOD
+
 );
 
 =attr irc
@@ -174,7 +214,7 @@ because if you said that you wanted it you probably expect it to be there.
 
 =attr repository_content
 
-Text displayed before the link to the source code repository.
+Specify the content to be displayed before the link to the source code repository.
 
 The default is a sufficient explanation (see L</SUPPORT>).
 
@@ -187,6 +227,41 @@ has repository_content => (
 The code is open to the world, and available for you to hack on. Please feel free to browse it and play
 with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
 from your repository :)
+EOPOD
+
+);
+
+=attr email_support
+
+Specify an email address here so users can contact you directly for help.
+
+If you supply a string without '@' in it, we assume it is a PAUSE id and mangle it into 'USER at cpan.org'.
+
+The default is none.
+
+=cut
+
+has email_support => (
+	is => 'ro',
+	isa => 'Str',
+	default => undef,
+);
+
+=attr email_content
+
+Specify the content for the email section.
+
+Please put the "{EMAIL}" placeholder somewhere!
+
+The default is a sufficient explanation ( see L</SUPPORT>).
+
+=cut
+
+has email_content => (
+	is => 'ro',
+	isa => 'Str',
+	default => <<'EOPOD',
+You can email the author of this module at {EMAIL} asking for help with any problems you have.
 EOPOD
 
 );
@@ -221,6 +296,7 @@ sub weave_section {
 			children => [
 				$self->_add_perldoc( $zilla ),
 				$self->_add_websites( $zilla ),
+				$self->_add_email( $zilla ),
 				$self->_add_irc( $zilla ),
 				$self->_add_bugs( $zilla, $input->{'distmeta'} ),
 				$self->_add_repo( $zilla ),
@@ -229,24 +305,47 @@ sub weave_section {
 	);
 }
 
+sub _add_email {
+	my( $self, $zilla ) = @_;
+
+	# Do we have anything to do?
+	return () if ! defined $self->email_support;
+
+	# pause id for email?
+	my $address = $self->email_support;
+	if ( $address !~ /\@/ ) {
+		$address = 'C<' . uc( $address ) . ' at cpan.org>';
+	}
+
+	my $content = $self->email_content;
+	$content =~ s/\{EMAIL\}/$address/;
+
+	return Pod::Elemental::Element::Nested->new( {
+		command => 'head2',
+		content => 'Email',
+		children => [
+			Pod::Elemental::Element::Pod5::Ordinary->new( {
+				content => $content,
+			} ),
+		],
+	} );
+}
+
 sub _add_bugs {
 	my( $self, $zilla, $distmeta ) = @_;
 
 	# Do we have anything to do?
 	return () if $self->bugs eq 'none';
 
-	my $dist = $zilla->name;
-	my $lc_dist = lc( $dist );
-
 	# Which kind of text should we display?
-	my $text;
+	my $text = $self->bugs_content;
 	if ( $self->bugs eq 'rt' ) {
-		$text = <<"EOPOD";
-Please report any bugs or feature requests by email to C<bug-$lc_dist at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=$dist>.  I will be
-notified, and then you'll automatically be notified of progress on your bug as I make changes.
-EOPOD
+		my $dist = $zilla->name;
+		my $mailto = "C<bug-" . lc( $dist ) . " at rt.cpan.org>";
+		my $web = "L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=$dist>";
 
+		$text =~ s/\{WEB\}/$web/;
+		$text =~ s/\{EMAIL\}/$mailto/;
 	} else {
 		# code copied from Pod::Weaver::Section::Bugs, thanks RJBS!
 		die 'No bugtracker in metadata!' unless exists $distmeta->{resources}{bugtracker};
@@ -254,19 +353,8 @@ EOPOD
 		my( $web, $mailto ) = @{$bugtracker}{qw/web mailto/};
 		die 'No bugtracker in metadata!' unless defined $web || defined $mailto;
 
-		$text = "Please report any bugs or feature requests ";
-
-		if ( defined $web ) {
-			$text .= "on the bugtracker website L<$web>";
-			$text .= defined $mailto ? " or " : ".";
-		}
-
-		if ( defined $mailto ) {
-			$text .= "by email to '$mailto'.";
-		}
-
-		$text .= " I will be notified, and then you'll automatically ";
-		$text .= "be notified of progress on your bug as I make changes.";
+		$text =~ s/\{WEB\}/L\<$web\>/ if defined $web;
+		$text =~ s/\{EMAIL\}/C\<$mailto\>/ if defined $mailto;
 	}
 
 	return Pod::Elemental::Element::Nested->new( {
@@ -290,18 +378,22 @@ sub _add_perldoc {
 	$perl_name =~ s/-/::/g;
 
 	# TODO add language detection as per RT#63726
-	# TODO when I do the lang thing, make this a head2 section...
-	return (
-		Pod::Elemental::Element::Pod5::Ordinary->new( {
+
+	return Pod::Elemental::Element::Nested->new( {
+		command => 'head2',
+		content => 'Perldoc',
+		children => [
+			Pod::Elemental::Element::Pod5::Ordinary->new( {
 			content => <<'EOPOD',
 You can find documentation for this module with the perldoc command.
 EOPOD
 
-		} ),
-		Pod::Elemental::Element::Pod5::Verbatim->new( {
-			content => "  perldoc $perl_name",
-		} ),
-	);
+			} ),
+			Pod::Elemental::Element::Pod5::Verbatim->new( {
+				content => "  perldoc $perl_name",
+			} ),
+		],
+	} );
 }
 
 sub _add_irc {
@@ -502,10 +594,7 @@ sub _add_websites {
 		content => 'Websites',
 		children => [
 			Pod::Elemental::Element::Pod5::Ordinary->new( {
-				content => <<EOPOD,
-The following websites have more information about this module, and may be of help to you. As always,
-in addition to those websites please use your favorite search engine to discover more resources.
-EOPOD
+				content => $self->websites_content,
 			} ),
 			Pod::Elemental::Element::Nested->new( {
 				command => 'over',
@@ -601,8 +690,8 @@ sub _make_item {
 
 =head1 DESCRIPTION
 
-This section plugin will produce a hunk of pod that lists the common support websites
-and an explanation of how to report bugs. It will do this only if it is being built with L<Dist::Zilla>
+This section plugin will produce a hunk of pod that lists the various ways to get support
+for this module. It will do this only if it is being built with L<Dist::Zilla>
 because it needs the data from the dzil object.
 
 If you have L<Dist::Zilla::Plugin::Repository> enabled in your F<dist.ini>, be sure to check the
