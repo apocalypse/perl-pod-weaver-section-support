@@ -2,6 +2,9 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+1.002
+	Released: 2011-02-02 22:55:07 UTC
+
 	Fix a few typos in the POD
 	Add email section to contact the author
 	Make the perldoc section a proper header
