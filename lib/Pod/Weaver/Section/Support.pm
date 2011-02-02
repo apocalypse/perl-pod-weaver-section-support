@@ -1,6 +1,6 @@
 package Pod::Weaver::Section::Support;
 
-# ABSTRACT: add a SUPPORT pod section
+# ABSTRACT: Add a SUPPORT section to your POD
 
 use Moose 1.03;
 use Moose::Autobox 0.10;
@@ -231,7 +231,7 @@ EOPOD
 
 );
 
-=attr email_support
+=attr email
 
 Specify an email address here so users can contact you directly for help.
 
@@ -241,9 +241,9 @@ The default is none.
 
 =cut
 
-has email_support => (
+has email => (
 	is => 'ro',
-	isa => 'Str',
+	isa => 'Maybe[Str]',
 	default => undef,
 );
 
@@ -309,10 +309,10 @@ sub _add_email {
 	my( $self, $zilla ) = @_;
 
 	# Do we have anything to do?
-	return () if ! defined $self->email_support;
+	return () if ! defined $self->email;
 
 	# pause id for email?
-	my $address = $self->email_support;
+	my $address = $self->email;
 	if ( $address !~ /\@/ ) {
 		$address = 'C<' . uc( $address ) . ' at cpan.org>';
 	}
