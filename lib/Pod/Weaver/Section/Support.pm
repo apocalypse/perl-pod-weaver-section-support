@@ -286,7 +286,7 @@ sub weave_section {
 			content => '',
 			children => [
 				Pod::Elemental::Element::Pod5::Ordinary->new( {
-					content => join( " ", qw( CPAN AnnoCPAN RT CPANTS Kwalitee diff irc ) ),
+					content => join( " ", qw( cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders ) ),
 				} ),
 			],
 		} ),
