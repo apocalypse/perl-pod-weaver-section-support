@@ -2,6 +2,10 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+	Made sure the bugs_content and the metadata match up, otherwise it will throw an error! ( thanks XENO! )
+	Changed the *_content attributes to arrayrefs so you can sanely use them in a weaver.ini ( thanks XENO! )
+	The email attribute didn't add C<> to the address if you specified your own ( thanks XENO! )
+
 1.002
 	Released: 2011-02-02 22:55:07 UTC
 

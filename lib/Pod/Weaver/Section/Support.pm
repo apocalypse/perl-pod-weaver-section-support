@@ -7,7 +7,7 @@ use Moose::Autobox 0.10;
 
 with 'Pod::Weaver::Role::Section' => { -version => '3.100710' };
 
-sub mvp_multivalue_args { qw( websites irc ) }
+sub mvp_multivalue_args { qw( websites irc bugs_content email_content irc_content repository_content websites_content ) }
 
 =attr all_modules
 
@@ -76,13 +76,15 @@ The default is a sufficient explanation (see L</SUPPORT>).
 
 has bugs_content => (
 	is => 'ro',
-	isa => 'Str',
-	default => <<'EOPOD',
+	isa => 'ArrayRef[Str]',
+	default => sub {
+		[ <<'EOPOD',
 Please report any bugs or feature requests by email to {EMAIL}, or through
 the web interface at {WEB}. You will be automatically notified of any
 progress on the request by the system.
 EOPOD
-
+		];
+	},
 );
 
 =attr websites
@@ -132,12 +134,14 @@ The default is a sufficient explanation (see L</SUPPORT>).
 
 has websites_content => (
 	is => 'ro',
-	isa => 'Str',
-	default => <<'EOPOD',
+	isa => 'ArrayRef[Str]',
+	default => sub {
+		[ <<'EOPOD',
 The following websites have more information about this module, and may be of help to you. As always,
 in addition to those websites please use your favorite search engine to discover more resources.
 EOPOD
-
+		];
+	},
 );
 
 =attr irc
@@ -172,14 +176,16 @@ The default is a sufficient explanation (see L</SUPPORT>).
 
 has irc_content => (
 	is => 'ro',
-	isa => 'Str',
-	default => <<'EOPOD',
+	isa => 'ArrayRef[Str]',
+	default => sub {
+		[ <<'EOPOD',
 You can get live help by using IRC ( Internet Relay Chat ). If you don't know what IRC is,
 please read this excellent guide: L<http://en.wikipedia.org/wiki/Internet_Relay_Chat>. Please
 be courteous and patient when talking to us, as we might be busy or sleeping! You can join
 those networks/channels and get help:
 EOPOD
-
+		];
+	},
 );
 
 =attr repository_link
@@ -222,13 +228,15 @@ The default is a sufficient explanation (see L</SUPPORT>).
 
 has repository_content => (
 	is => 'ro',
-	isa => 'Str',
-	default => <<'EOPOD',
+	isa => 'ArrayRef[Str]',
+	default => sub {
+		[ <<'EOPOD',
 The code is open to the world, and available for you to hack on. Please feel free to browse it and play
 with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
 from your repository :)
 EOPOD
-
+		];
+	},
 );
 
 =attr email
@@ -259,11 +267,13 @@ The default is a sufficient explanation ( see L</SUPPORT>).
 
 has email_content => (
 	is => 'ro',
-	isa => 'Str',
-	default => <<'EOPOD',
+	isa => 'ArrayRef[Str]',
+	default => sub {
+		[ <<'EOPOD',
 You can email the author of this module at {EMAIL} asking for help with any problems you have.
 EOPOD
-
+		];
+	},
 );
 
 sub weave_section {
@@ -315,9 +325,11 @@ sub _add_email {
 	my $address = $self->email;
 	if ( $address !~ /\@/ ) {
 		$address = 'C<' . uc( $address ) . ' at cpan.org>';
+	} else {
+		$address = "C<$address>";
 	}
 
-	my $content = $self->email_content;
+	my $content = join( "\n", @{ $self->email_content } );
 	$content =~ s/\{EMAIL\}/$address/;
 
 	return Pod::Elemental::Element::Nested->new( {
@@ -338,7 +350,7 @@ sub _add_bugs {
 	return () if $self->bugs eq 'none';
 
 	# Which kind of text should we display?
-	my $text = $self->bugs_content;
+	my $text = join( "\n", @{ $self->bugs_content } );
 	if ( $self->bugs eq 'rt' ) {
 		my $dist = $zilla->name;
 		my $mailto = "C<bug-" . lc( $dist ) . " at rt.cpan.org>";
@@ -348,13 +360,21 @@ sub _add_bugs {
 		$text =~ s/\{EMAIL\}/$mailto/;
 	} else {
 		# code copied from Pod::Weaver::Section::Bugs, thanks RJBS!
-		die 'No bugtracker in metadata!' unless exists $distmeta->{resources}{bugtracker};
+		$zilla->log_fatal( 'No bugtracker in metadata!' ) unless exists $distmeta->{resources}{bugtracker};
 		my $bugtracker = $distmeta->{resources}{bugtracker};
 		my( $web, $mailto ) = @{$bugtracker}{qw/web mailto/};
-		die 'No bugtracker in metadata!' unless defined $web || defined $mailto;
+		$zilla->log_fatal( 'No bugtracker in metadata!' ) unless defined $web || defined $mailto;
 
 		$text =~ s/\{WEB\}/L\<$web\>/ if defined $web;
 		$text =~ s/\{EMAIL\}/C\<$mailto\>/ if defined $mailto;
+
+		# sanity check the content
+		if ( $text =~ /\{WEB\}/ ) {
+			$zilla->log_fatal( "The metadata doesn't have a website for the bugtracker but you specified it in the bugs_content!" );
+		}
+		if ( $text =~ /\{EMAIL\}/ ) {
+			$zilla->log_fatal( "The metadata doesn't have an email for the bugtracker but you specified it in the bugs_content!" );
+		}
 	}
 
 	return Pod::Elemental::Element::Nested->new( {
@@ -456,7 +476,7 @@ sub _add_irc {
 		content => 'Internet Relay Chat',
 		children => [
 			Pod::Elemental::Element::Pod5::Ordinary->new( {
-				content => $self->irc_content,
+				content => join( "\n", @{ $self->irc_content } ),
 			} ),
 			Pod::Elemental::Element::Nested->new( {
 				command => 'over',
@@ -486,7 +506,8 @@ sub _add_repo {
 		$zilla->log_fatal( [ "Repository information missing and you wanted: %s", $self->repository_link ] );
 	}
 
-	my $text = $self->repository_content . "\n";
+	my $text = join( "\n", @{ $self->repository_content } );
+	$text .= "\n"; # for the links to be appended
 
 	# for dzil v3 with CPAN Meta v2
 	if ( ref $repo ) {
@@ -571,7 +592,7 @@ sub _add_websites {
 	# sanity check
 	foreach my $type ( @{ $self->websites } ) {
 		if ( $type !~ /^(?:search|rt|anno|ratings|forum|kwalitee|testers|testmatrix|all)$/i ) {
-			die "Unknown website type: $type";
+			$zilla->log_fatal( "Unknown website type: $type" );
 		}
 	}
 
@@ -594,7 +615,7 @@ sub _add_websites {
 		content => 'Websites',
 		children => [
 			Pod::Elemental::Element::Pod5::Ordinary->new( {
-				content => $self->websites_content,
+				content => join( "\n", @{ $self->websites_content } ),
 			} ),
 			Pod::Elemental::Element::Nested->new( {
 				command => 'over',
