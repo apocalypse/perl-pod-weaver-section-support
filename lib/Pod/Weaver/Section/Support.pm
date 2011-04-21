@@ -93,7 +93,7 @@ Specify what website links you want to see. This is an array, and you can pick a
 specify it as a comma-delimited string. The ordering of the options are important, as they are reflected in
 the final POD.
 
-Valid options are: "none", "search", "rt", "anno", "ratings", "forum", "kwalitee", "testers", "testmatrix" and "all".
+Valid options are: "none", "search", "rt", "anno", "ratings", "forum", "kwalitee", "testers", "testmatrix", "deps" and "all".
 
 The default is "all".
 
@@ -104,8 +104,9 @@ The default is "all".
 	ratings		- http://cpanratings.perl.org/d/$dist
 	forum		- http://cpanforum.com/dist/$dist
 	kwalitee	- http://cpants.perl.org/dist/overview/$dist
-	testers		- http://cpantesters.org/distro/$first_char/$dist.html
+	testers		- http://cpantesters.org/distro/$first_char/$dist
 	testmatrix	- http://matrix.cpantesters.org/?dist=$dist
+	deps		- http://deps.cpantesters.org/?module=$module
 
 	# in weaver.ini
 	[Support]
@@ -591,14 +592,14 @@ sub _add_websites {
 
 	# sanity check
 	foreach my $type ( @{ $self->websites } ) {
-		if ( $type !~ /^(?:search|rt|anno|ratings|forum|kwalitee|testers|testmatrix|all)$/i ) {
+		if ( $type !~ /^(?:search|rt|anno|ratings|forum|kwalitee|testers|testmatrix|deps|all)$/i ) {
 			$zilla->log_fatal( "Unknown website type: $type" );
 		}
 	}
 
 	# Set the default ordering for "all"
 	if ( grep { $_ eq 'all' } @{ $self->websites } ) {
-		@{ $self->websites } = qw( search rt anno ratings forum kwalitee testers testmatrix );
+		@{ $self->websites } = qw( search rt anno ratings forum kwalitee testers testmatrix deps );
 	}
 
 	# Make the website links!
@@ -607,7 +608,10 @@ sub _add_websites {
 	foreach my $type ( @{ $self->websites } ) {
 		next if $seen_type{$type}++;
 		$type = '_add_websites_' . $type;
-		push( @links, $self->$type( $zilla->name ) );
+		my $main_module = $zilla->main_module;
+		$main_module =~ s|/|::|;
+		$main_module =~ s/\.pm$//;
+		push( @links, $self->$type( $zilla->name, $main_module ) );
 	}
 
 	return Pod::Elemental::Element::Nested->new( {
@@ -633,53 +637,96 @@ sub _add_websites {
 }
 
 sub _add_websites_search {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'Search CPAN', "L<http://search.cpan.org/dist/$dist>" );
+	return _make_item( 'Search CPAN', <<"EOF" );
+The default CPAN search engine, useful to view POD in HTML format.
+
+  L<http://search.cpan.org/dist/$dist>
+EOF
 }
 
 sub _add_websites_rt {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'RT: CPAN\'s Bug Tracker', "L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>" );
+	return _make_item( "RT: CPAN's Bug Tracker", <<"EOF" );
+The default bug/issue tracking system for CPAN.
+
+  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>
+EOF
 }
 
 sub _add_websites_anno {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'AnnoCPAN: Annotated CPAN documentation', "L<http://annocpan.org/dist/$dist>" );
+	return _make_item( 'AnnoCPAN', <<"EOF" );
+AnnoCPAN is a website that allows community annonations of Perl module documentation.
+
+  L<http://annocpan.org/dist/$dist>
+EOF
 }
 
 sub _add_websites_ratings {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'CPAN Ratings', "L<http://cpanratings.perl.org/d/$dist>" );
+	return _make_item( 'CPAN Ratings', <<"EOF" );
+CPANRatings is a website that allows community ratings and reviews of Perl modules.
+
+  L<http://cpanratings.perl.org/d/$dist>
+EOF
 }
 
 sub _add_websites_forum {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'CPAN Forum', "L<http://cpanforum.com/dist/$dist>" );
+	return _make_item( 'CPAN Forum', <<"EOF" );
+The CPAN Forum is a web forum for discussing Perl modules.
+
+  L<http://cpanforum.com/dist/$dist>
+EOF
 }
 
 sub _add_websites_kwalitee {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'CPANTS Kwalitee', "L<http://cpants.perl.org/dist/overview/$dist>" );
+	# TODO add link for http://perl-qa.hexten.net/wiki/index.php/Kwalitee ?
+	return _make_item( 'CPANTS', <<"EOF" );
+The CPANTS service analyzes the Kwalitee ( code metrics ) of a distribution.
+
+  L<http://cpants.perl.org/dist/overview/$dist>
+EOF
 }
 
 sub _add_websites_testers {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
 	my $first_char = substr( $dist, 0, 1 );
 
-	return _make_item( 'CPAN Testers Results', "L<http://cpantesters.org/distro/$first_char/$dist.html>" );
+	return _make_item( 'CPAN Testers', <<"EOF" );
+The CPAN Testers service is a network of smokers who run automated tests on uploaded CPAN distributions.
+
+  L<http://www.cpantesters.org/distro/$first_char/$dist>
+EOF
 }
 
 sub _add_websites_testmatrix {
-	my( $self, $dist ) = @_;
+	my( $self, $dist, $module ) = @_;
 
-	return _make_item( 'CPAN Testers Matrix', "L<http://matrix.cpantesters.org/?dist=$dist>" );
+	return _make_item( 'CPAN Testers Matrix', <<"EOF" );
+The CPAN Testers Matrix provides a visual way to determine what Perls/platforms PASSed for a distribution.
+
+  L<http://matrix.cpantesters.org/?dist=$dist>
+EOF
+}
+
+sub _add_websites_deps {
+	my( $self, $dist, $module ) = @_;
+
+	return _make_item( 'CPAN Testers Dependencies', <<"EOF" );
+The CPAN Testers Dependencies chart shows the test results of all dependencies for a distribution.
+
+  L<http://deps.cpantesters.org/?module=$module>
+EOF
 }
 
 sub _make_item {
