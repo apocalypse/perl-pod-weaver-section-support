@@ -608,9 +608,10 @@ sub _add_websites {
 	foreach my $type ( @{ $self->websites } ) {
 		next if $seen_type{$type}++;
 		$type = '_add_websites_' . $type;
-		my $main_module = $zilla->main_module;
-		$main_module =~ s|/|::|;
+		my $main_module = $zilla->main_module->name;
+		$main_module =~ s|^lib/||i;
 		$main_module =~ s/\.pm$//;
+		$main_module =~ s|/|::|g;
 		push( @links, $self->$type( $zilla->name, $main_module ) );
 	}
 
@@ -642,7 +643,7 @@ sub _add_websites_search {
 	return _make_item( 'Search CPAN', <<"EOF" );
 The default CPAN search engine, useful to view POD in HTML format.
 
-  L<http://search.cpan.org/dist/$dist>
+L<http://search.cpan.org/dist/$dist>
 EOF
 }
 
@@ -652,7 +653,7 @@ sub _add_websites_rt {
 	return _make_item( "RT: CPAN's Bug Tracker", <<"EOF" );
 The default bug/issue tracking system for CPAN.
 
-  L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>
 EOF
 }
 
@@ -662,7 +663,7 @@ sub _add_websites_anno {
 	return _make_item( 'AnnoCPAN', <<"EOF" );
 AnnoCPAN is a website that allows community annonations of Perl module documentation.
 
-  L<http://annocpan.org/dist/$dist>
+L<http://annocpan.org/dist/$dist>
 EOF
 }
 
@@ -672,7 +673,7 @@ sub _add_websites_ratings {
 	return _make_item( 'CPAN Ratings', <<"EOF" );
 CPANRatings is a website that allows community ratings and reviews of Perl modules.
 
-  L<http://cpanratings.perl.org/d/$dist>
+L<http://cpanratings.perl.org/d/$dist>
 EOF
 }
 
@@ -682,7 +683,7 @@ sub _add_websites_forum {
 	return _make_item( 'CPAN Forum', <<"EOF" );
 The CPAN Forum is a web forum for discussing Perl modules.
 
-  L<http://cpanforum.com/dist/$dist>
+L<http://cpanforum.com/dist/$dist>
 EOF
 }
 
@@ -693,7 +694,7 @@ sub _add_websites_kwalitee {
 	return _make_item( 'CPANTS', <<"EOF" );
 The CPANTS service analyzes the Kwalitee ( code metrics ) of a distribution.
 
-  L<http://cpants.perl.org/dist/overview/$dist>
+L<http://cpants.perl.org/dist/overview/$dist>
 EOF
 }
 
@@ -705,7 +706,7 @@ sub _add_websites_testers {
 	return _make_item( 'CPAN Testers', <<"EOF" );
 The CPAN Testers service is a network of smokers who run automated tests on uploaded CPAN distributions.
 
-  L<http://www.cpantesters.org/distro/$first_char/$dist>
+L<http://www.cpantesters.org/distro/$first_char/$dist>
 EOF
 }
 
@@ -715,7 +716,7 @@ sub _add_websites_testmatrix {
 	return _make_item( 'CPAN Testers Matrix', <<"EOF" );
 The CPAN Testers Matrix provides a visual way to determine what Perls/platforms PASSed for a distribution.
 
-  L<http://matrix.cpantesters.org/?dist=$dist>
+L<http://matrix.cpantesters.org/?dist=$dist>
 EOF
 }
 
@@ -725,7 +726,7 @@ sub _add_websites_deps {
 	return _make_item( 'CPAN Testers Dependencies', <<"EOF" );
 The CPAN Testers Dependencies chart shows the test results of all dependencies for a distribution.
 
-  L<http://deps.cpantesters.org/?module=$module>
+L<http://deps.cpantesters.org/?module=$module>
 EOF
 }
 
