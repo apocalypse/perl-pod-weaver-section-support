@@ -576,7 +576,7 @@ sub _add_websites {
 
 	# Do we have anything to do?
 	return () if ! scalar @{ $self->websites };
-	return () if grep { $_ eq 'none' } @{ $self->websites };
+	return () if grep { $_ eq 'none' } @{ $self->websites }; ## no critic ( BuiltinFunctions::ProhibitBooleanGrep )
 
 	# explode CSV lists
 	my @newlist;
@@ -602,7 +602,7 @@ sub _add_websites {
 	}
 
 	# Set the default ordering for "all"
-	if ( grep { $_ eq 'all' } @{ $self->websites } ) {
+	if ( grep { $_ eq 'all' } @{ $self->websites } ) { ## no critic ( BuiltinFunctions::ProhibitBooleanGrep )
 		@{ $self->websites } = qw( search rt anno ratings forum kwalitee testers testmatrix deps );
 	}
 
