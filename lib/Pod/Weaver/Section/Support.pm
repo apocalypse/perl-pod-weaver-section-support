@@ -395,8 +395,12 @@ sub _add_perldoc {
 	# Do we have anything to do?
 	return () if ! $self->perldoc;
 
-	my $perl_name = $zilla->name;
-	$perl_name =~ s/-/::/g;
+	# Don't use $zilla->name as some dists' name is different from the actual module...
+	# TODO what if user specified $self->all_modules( 1 )? should this use the current filename?
+	my $main_module = $zilla->main_module->name;
+	$main_module =~ s|^lib/||i;
+	$main_module =~ s/\.pm$//;
+	$main_module =~ s|/|::|g;
 
 	# TODO add language detection as per RT#63726
 
@@ -411,7 +415,7 @@ EOPOD
 
 			} ),
 			Pod::Elemental::Element::Pod5::Verbatim->new( {
-				content => "  perldoc $perl_name",
+				content => "  perldoc $main_module",
 			} ),
 		],
 	} );
@@ -692,7 +696,7 @@ sub _add_websites_kwalitee {
 
 	# TODO add link for http://perl-qa.hexten.net/wiki/index.php/Kwalitee ?
 	return _make_item( 'CPANTS', <<"EOF" );
-The CPANTS is a service that analyzes the Kwalitee ( code metrics ) of a distribution.
+The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
 
 L<http://cpants.perl.org/dist/overview/$dist>
 EOF
@@ -714,7 +718,7 @@ sub _add_websites_testmatrix {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'CPAN Testers Matrix', <<"EOF" );
-The CPAN Testers Matrix is a service that provides a visual way to determine what Perls/platforms PASSed for a distribution.
+The CPAN Testers Matrix is a website that provides a visual way to determine what Perls/platforms PASSed for a distribution.
 
 L<http://matrix.cpantesters.org/?dist=$dist>
 EOF
@@ -724,7 +728,7 @@ sub _add_websites_deps {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'CPAN Testers Dependencies', <<"EOF" );
-The CPAN Testers Dependencies is a service that shows a chart of the test results of all dependencies for a distribution.
+The CPAN Testers Dependencies is a website that shows a chart of the test results of all dependencies for a distribution.
 
 L<http://deps.cpantesters.org/?module=$module>
 EOF
