@@ -651,7 +651,7 @@ sub _add_websites_rt {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( "RT: CPAN's Bug Tracker", <<"EOF" );
-The default bug/issue tracking system for CPAN.
+The RT ( Request Tracker ) website is the default bug/issue tracking system for CPAN.
 
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>
 EOF
@@ -661,7 +661,7 @@ sub _add_websites_anno {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'AnnoCPAN', <<"EOF" );
-AnnoCPAN is a website that allows community annonations of Perl module documentation.
+The AnnoCPAN is a website that allows community annonations of Perl module documentation.
 
 L<http://annocpan.org/dist/$dist>
 EOF
@@ -671,7 +671,7 @@ sub _add_websites_ratings {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'CPAN Ratings', <<"EOF" );
-CPANRatings is a website that allows community ratings and reviews of Perl modules.
+The CPAN Ratings is a website that allows community ratings and reviews of Perl modules.
 
 L<http://cpanratings.perl.org/d/$dist>
 EOF
@@ -692,7 +692,7 @@ sub _add_websites_kwalitee {
 
 	# TODO add link for http://perl-qa.hexten.net/wiki/index.php/Kwalitee ?
 	return _make_item( 'CPANTS', <<"EOF" );
-The CPANTS service analyzes the Kwalitee ( code metrics ) of a distribution.
+The CPANTS is a service that analyzes the Kwalitee ( code metrics ) of a distribution.
 
 L<http://cpants.perl.org/dist/overview/$dist>
 EOF
@@ -704,7 +704,7 @@ sub _add_websites_testers {
 	my $first_char = substr( $dist, 0, 1 );
 
 	return _make_item( 'CPAN Testers', <<"EOF" );
-The CPAN Testers service is a network of smokers who run automated tests on uploaded CPAN distributions.
+The CPAN Testers is a network of smokers who run automated tests on uploaded CPAN distributions.
 
 L<http://www.cpantesters.org/distro/$first_char/$dist>
 EOF
@@ -714,7 +714,7 @@ sub _add_websites_testmatrix {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'CPAN Testers Matrix', <<"EOF" );
-The CPAN Testers Matrix provides a visual way to determine what Perls/platforms PASSed for a distribution.
+The CPAN Testers Matrix is a service that provides a visual way to determine what Perls/platforms PASSed for a distribution.
 
 L<http://matrix.cpantesters.org/?dist=$dist>
 EOF
@@ -724,7 +724,7 @@ sub _add_websites_deps {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'CPAN Testers Dependencies', <<"EOF" );
-The CPAN Testers Dependencies chart shows the test results of all dependencies for a distribution.
+The CPAN Testers Dependencies is a service that shows a chart of the test results of all dependencies for a distribution.
 
 L<http://deps.cpantesters.org/?module=$module>
 EOF
