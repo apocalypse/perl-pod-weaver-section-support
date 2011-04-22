@@ -87,6 +87,8 @@ EOPOD
 	},
 );
 
+# TODO add kobesearch to websites?
+
 =attr websites
 
 Specify what website links you want to see. This is an array, and you can pick any combination. You can also
