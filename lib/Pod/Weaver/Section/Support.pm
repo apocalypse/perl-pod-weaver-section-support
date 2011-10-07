@@ -510,7 +510,10 @@ sub _add_repo {
 	if ( exists $zilla->distmeta->{resources}{repository} ) {
 		$repo = $zilla->distmeta->{resources}{repository};
 	} else {
-		$self->log_fatal( [ "Repository information missing and you wanted: %s", $self->repository_link ] );
+		$self->log_fatal( [
+			"Repository information in meta.resources.repository is missing and you wanted: %s",
+			$self->repository_link eq 'both' ? 'both (web and url)' : $self->repository_link,
+		] );
 	}
 
 	my $text = join( "\n", @{ $self->repository_content } );
