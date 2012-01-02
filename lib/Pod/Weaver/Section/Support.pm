@@ -363,20 +363,20 @@ sub _add_bugs {
 		$text =~ s/\{EMAIL\}/$mailto/;
 	} else {
 		# code copied from Pod::Weaver::Section::Bugs, thanks RJBS!
-		$zilla->log_fatal( 'No bugtracker in metadata!' ) unless exists $distmeta->{resources}{bugtracker};
+		$self->log_fatal( 'No bugtracker in metadata!' ) unless exists $distmeta->{resources}{bugtracker};
 		my $bugtracker = $distmeta->{resources}{bugtracker};
 		my( $web, $mailto ) = @{$bugtracker}{qw/web mailto/};
-		$zilla->log_fatal( 'No bugtracker in metadata!' ) unless defined $web || defined $mailto;
+		$self->log_fatal( 'No bugtracker in metadata!' ) unless defined $web || defined $mailto;
 
 		$text =~ s/\{WEB\}/L\<$web\>/ if defined $web;
 		$text =~ s/\{EMAIL\}/C\<$mailto\>/ if defined $mailto;
 
 		# sanity check the content
 		if ( $text =~ /\{WEB\}/ ) {
-			$zilla->log_fatal( "The metadata doesn't have a website for the bugtracker but you specified it in the bugs_content!" );
+			$self->log_fatal( "The metadata doesn't have a website for the bugtracker but you specified it in the bugs_content!" );
 		}
 		if ( $text =~ /\{EMAIL\}/ ) {
-			$zilla->log_fatal( "The metadata doesn't have an email for the bugtracker but you specified it in the bugs_content!" );
+			$self->log_fatal( "The metadata doesn't have an email for the bugtracker but you specified it in the bugs_content!" );
 		}
 	}
 
@@ -510,7 +510,10 @@ sub _add_repo {
 	if ( exists $zilla->distmeta->{resources}{repository} ) {
 		$repo = $zilla->distmeta->{resources}{repository};
 	} else {
-		$zilla->log_fatal( [ "Repository information missing and you wanted: %s", $self->repository_link ] );
+		$self->log_fatal( [
+			"Repository information in meta.resources.repository is missing and you wanted: %s",
+			$self->repository_link eq 'both' ? 'both (web and url)' : $self->repository_link,
+		] );
 	}
 
 	my $text = join( "\n", @{ $self->repository_content } );
@@ -523,13 +526,13 @@ sub _add_repo {
 			if ( exists $repo->{web} ) {
 				$text .= 'L<' . $repo->{web} . ">";
 			} else {
-				$zilla->log_fatal("Expected to find 'web' repository link but it is missing in the metadata!");
+				$self->log_fatal("Expected to find 'web' repository link but it is missing in the metadata!");
 			}
 		}
 
 		if ( $self->repository_link eq 'url' or $self->repository_link eq 'both' ) {
 			if ( ! exists $repo->{url} ) {
-				$zilla->log_fatal("Expected to find 'url' repository link but it is missing in the metadata!");
+				$self->log_fatal("Expected to find 'url' repository link but it is missing in the metadata!");
 			}
 
 			if ( $self->repository_link eq 'both' ) {
@@ -558,7 +561,7 @@ sub _add_repo {
 			}
 		}
 	} else {
-		$zilla->log_warning("You need to update Dist::Zilla::Plugin::Repository to at least v0.15 for the correct metadata!");
+		$self->log_warning("You need to update Dist::Zilla::Plugin::Repository to at least v0.15 for the correct metadata!");
 		$text .= "L<$repo>";
 	}
 
@@ -599,7 +602,7 @@ sub _add_websites {
 	# sanity check
 	foreach my $type ( @{ $self->websites } ) {
 		if ( $type !~ /^(?:search|rt|anno|ratings|forum|kwalitee|testers|testmatrix|deps|all)$/i ) {
-			$zilla->log_fatal( "Unknown website type: $type" );
+			$self->log_fatal( "Unknown website type: $type" );
 		}
 	}
 
