@@ -667,7 +667,7 @@ sub _add_websites_anno {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'AnnoCPAN', <<"EOF" );
-The AnnoCPAN is a website that allows community annonations of Perl module documentation.
+The AnnoCPAN is a website that allows community annotations of Perl module documentation.
 
 L<http://annocpan.org/dist/$dist>
 EOF
@@ -720,7 +720,7 @@ sub _add_websites_testmatrix {
 	my( $self, $dist, $module ) = @_;
 
 	return _make_item( 'CPAN Testers Matrix', <<"EOF" );
-The CPAN Testers Matrix is a website that provides a visual way to determine what Perls/platforms PASSed for a distribution.
+The CPAN Testers Matrix is a website that provides a visual overview of the test results for a distribution on various Perls/platforms.
 
 L<http://matrix.cpantesters.org/?dist=$dist>
 EOF
