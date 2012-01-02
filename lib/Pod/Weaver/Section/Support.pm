@@ -95,7 +95,7 @@ Specify what website links you want to see. This is an array, and you can pick a
 specify it as a comma-delimited string. The ordering of the options are important, as they are reflected in
 the final POD.
 
-Valid options are: "none", "search", "rt", "anno", "ratings", "forum", "kwalitee", "testers", "testmatrix", "deps" and "all".
+Valid options are: "none", "metacpan", "search", "rt", "anno", "ratings", "forum", "kwalitee", "testers", "testmatrix", "deps" and "all".
 
 The default is "all".
 
