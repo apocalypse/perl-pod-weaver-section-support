@@ -100,6 +100,7 @@ Valid options are: "none", "search", "rt", "anno", "ratings", "forum", "kwalitee
 The default is "all".
 
 	# Where the links go to:
+	metacpan	- http://metacpan.org/release/$dist
 	search		- http://search.cpan.org/dist/$dist
 	rt		- http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist
 	anno		- http://annocpan.org/dist/$dist
@@ -299,7 +300,7 @@ sub weave_section {
 			content => '',
 			children => [
 				Pod::Elemental::Element::Pod5::Ordinary->new( {
-					content => join( " ", qw( cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders ) ),
+					content => join( " ", qw( cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan ) ),
 				} ),
 			],
 		} ),
@@ -598,14 +599,14 @@ sub _add_websites {
 
 	# sanity check
 	foreach my $type ( @{ $self->websites } ) {
-		if ( $type !~ /^(?:search|rt|anno|ratings|forum|kwalitee|testers|testmatrix|deps|all)$/i ) {
+		if ( $type !~ /^(?:metacpan|search|rt|anno|ratings|forum|kwalitee|testers|testmatrix|deps|all)$/i ) {
 			$zilla->log_fatal( "Unknown website type: $type" );
 		}
 	}
 
 	# Set the default ordering for "all"
 	if ( grep { $_ eq 'all' } @{ $self->websites } ) { ## no critic ( BuiltinFunctions::ProhibitBooleanGrep )
-		@{ $self->websites } = qw( search rt anno ratings forum kwalitee testers testmatrix deps );
+		@{ $self->websites } = qw( metacpan search rt anno ratings forum kwalitee testers testmatrix deps );
 	}
 
 	# Make the website links!
@@ -641,6 +642,16 @@ sub _add_websites {
 			} ),
 		],
 	} );
+}
+
+sub _add_websites_metacpan {
+	my( $self, $dist, $module ) = @_;
+
+	return _make_item( 'MetaCPAN', <<"EOF" );
+A modern, open-source CPAN search engine, useful to view POD in HTML format.
+
+L<http://metacpan.org/release/$dist>
+EOF
 }
 
 sub _add_websites_search {
