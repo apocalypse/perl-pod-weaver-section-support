@@ -2,9 +2,13 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
+1.005
+	Released: 2012-01-03 00:48:32 UTC
+
 	Add the MetaCPAN website to the website list ( thanks RWSTAUNER! )
 	Tweak the logging system a bit ( thanks KENTNL! )
 	Fix some internal spelling mistakes ( thanks RWSTAUNER! )
+	Resolve RT#69033 - logging tweaks ( thanks RJBS! )
 
 1.004
 	Released: 2011-04-21 21:48:17 UTC
