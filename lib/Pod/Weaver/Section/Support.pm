@@ -7,7 +7,7 @@ use Moose::Autobox 0.10;
 
 with 'Pod::Weaver::Role::Section' => { -version => '3.100710' };
 
-sub mvp_multivalue_args { qw( websites irc bugs_content email_content irc_content repository_content websites_content ) }
+sub mvp_multivalue_args { qw( websites irc preamble_content bugs_content email_content irc_content repository_content websites_content ) }
 
 =attr all_modules
 
@@ -21,6 +21,20 @@ has all_modules => (
 	is => 'ro',
 	isa => 'Bool',
 	default => 0,
+);
+
+=attr preamble_content
+
+Specify text to use after the initial "SUPPORT" header and before sub-headings.
+
+The default is an empty string.
+
+=cut
+
+has preamble_content => (
+	is => 'ro',
+	isa => 'ArrayRef[Str]',
+	default => sub { [''] },
 );
 
 =attr perldoc
@@ -291,6 +305,8 @@ sub weave_section {
 		return if $zilla->main_module->name ne $input->{filename};
 	}
 
+        my $preamble = $self->_add_preamble( $zilla );
+
 	$document->children->push(
 		# Add the stopwords so the spell checker won't complain!
 		# TODO make this smarter so it loads only the stopwords we need for specific sections... ohwell
@@ -308,6 +324,7 @@ sub weave_section {
 			command => 'head1',
 			content => 'SUPPORT',
 			children => [
+				( defined($preamble) ? $preamble : () ),
 				$self->_add_perldoc( $zilla ),
 				$self->_add_websites( $zilla ),
 				$self->_add_email( $zilla ),
@@ -344,6 +361,20 @@ sub _add_email {
 				content => $content,
 			} ),
 		],
+	} );
+}
+
+sub _add_preamble {
+	my( $self, $zilla, $distmeta ) = @_;
+
+	# Which kind of text should we display?
+	my $text = join( "\n", @{ $self->preamble_content } );
+
+	# Do we have anything to do?
+        return unless length $text;
+
+	return Pod::Elemental::Element::Pod5::Ordinary->new( {
+		content => $text,
 	} );
 }
 
