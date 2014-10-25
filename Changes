@@ -2,29 +2,27 @@ Revision history for Pod::Weaver::Section::Support
 
 {{$NEXT}}
 
-1.005
-	Released: 2012-01-03 00:48:32 UTC
+	Documentation tweaks
+
+1.005	2012-01-03 00:48:32 UTC
 
 	Add the MetaCPAN website to the website list ( thanks RWSTAUNER! )
 	Tweak the logging system a bit ( thanks KENTNL! )
 	Fix some internal spelling mistakes ( thanks RWSTAUNER! )
 	Resolve RT#69033 - logging tweaks ( thanks RJBS! )
 
-1.004
-	Released: 2011-04-21 21:48:17 UTC
+1.004	2011-04-21 21:48:17 UTC
 
 	Tweaked the output of the websites so it also includes a descriptive text of the link
 	Add the deps.cpantesters.org website ( deps ) to the website list
 
-1.003
-	Released: 2011-02-24 17:03:11 UTC
+1.003	2011-02-24 17:03:11 UTC
 
 	Made sure the bugs_content and the metadata match up, otherwise it will throw an error! ( thanks XENO! )
 	Changed the *_content attributes to arrayrefs so you can sanely use them in a weaver.ini ( thanks XENO! )
 	The email attribute didn't add C<> to the address if you specified your own ( thanks XENO! )
 
-1.002
-	Released: 2011-02-02 22:55:07 UTC
+1.002	2011-02-02 22:55:07 UTC
 
 	Fix a few typos in the POD
 	Add email section to contact the author
@@ -33,8 +31,7 @@ Revision history for Pod::Weaver::Section::Support
 	Add attribute to specify the bugs content ( thanks DAGOLDEN! )
 	Add attribute to specify the website content
 
-1.001
-	Released: 2010-12-08 07:35:41 UTC
+1.001	2010-12-08 07:35:41 UTC
 
 	Add attributes to control the repository section ( thanks RWSTAUNER! )
 	Reorganized the layout of the generated POD
@@ -44,54 +41,47 @@ Revision history for Pod::Weaver::Section::Support
 	Add attribute to enable/disable perldoc section ( thanks GETTY! )
 	Add attribute to enable/disable SUPPORT section for all modules ( thanks GETTY! )
 
-1.000
-	Released: 2010-05-30 18:03:49 UTC
+1.000	2010-05-30 18:03:49 UTC
 
 	Work with CPAN Meta v2 by recognizing the repository
 	Make the repository hunk of POD optional
 
-0.010
-	Released: 2010-05-28 17:41:54 UTC
+0.010	2010-05-28 17:41:54 UTC
 
 	fixed the way the stopwords were added to the POD
 
-0.009
-	Released: 2010-05-13 01:41:59 UTC
+0.009	2010-05-13 01:41:59 UTC
 
 	another fake release
 
-0.008
-	Released: 2010-05-12 04:50:01 UTC
+0.008	2010-05-12 04:50:01 UTC
 
-0.007
-	Released: 2010-05-11 21:12:28 UTC
+	fake release
 
-0.006
-	Released: 2010-05-11 17:05:55 UTC
+0.007	2010-05-11 21:12:28 UTC
+
+	fake release
+
+0.006	2010-05-11 17:05:55 UTC
 
 	Tweaked the POD a little, and make another release...
 
-0.005
-	Released: 2010-05-11 06:26:29 UTC
+0.005	2010-05-11 06:26:29 UTC
 
 	real CPAN release, ha!
 
-0.004
-	Released: 2010-05-11 06:25:00 UTC
+0.004	2010-05-11 06:25:00 UTC
 
 	add example weaver.ini
 
-0.003
-	Released: 2010-05-11 06:16:15 UTC
+0.003	2010-05-11 06:16:15 UTC
 
 	yet another test release
 
-0.002
-	Released: 2010-05-11 06:13:52 UTC
+0.002	2010-05-11 06:13:52 UTC
 
 	test release
 
-0.001
-	Released: 2010-05-11 03:29:40 UTC
+0.001	2010-05-11 03:29:40 UTC
 
 	initial release
