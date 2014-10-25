@@ -320,7 +320,7 @@ sub weave_section {
 }
 
 sub _add_email {
-	my( $self, $zilla ) = @_;
+	my $self = shift;
 
 	# Do we have anything to do?
 	return () if ! defined $self->email;
@@ -425,7 +425,7 @@ EOPOD
 }
 
 sub _add_irc {
-	my( $self, $zilla ) = @_;
+	my $self = shift;
 
 	# Do we have anything to do?
 	return () if ! scalar @{ $self->irc };
@@ -622,7 +622,10 @@ sub _add_websites {
 		$main_module =~ s|^lib/||i;
 		$main_module =~ s/\.pm$//;
 		$main_module =~ s|/|::|g;
-		push( @links, $self->$type( $zilla->name, $main_module ) );
+
+		# TODO I'm too lazy to build a proper dispatch table...
+		no strict 'refs';
+		push( @links, &$type( $zilla->name, $main_module ) );
 	}
 
 	return Pod::Elemental::Element::Nested->new( {
@@ -648,7 +651,7 @@ sub _add_websites {
 }
 
 sub _add_websites_metacpan {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( 'MetaCPAN', <<"EOF" );
 A modern, open-source CPAN search engine, useful to view POD in HTML format.
@@ -658,7 +661,7 @@ EOF
 }
 
 sub _add_websites_search {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( 'Search CPAN', <<"EOF" );
 The default CPAN search engine, useful to view POD in HTML format.
@@ -668,7 +671,7 @@ EOF
 }
 
 sub _add_websites_rt {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( "RT: CPAN's Bug Tracker", <<"EOF" );
 The RT ( Request Tracker ) website is the default bug/issue tracking system for CPAN.
@@ -678,7 +681,7 @@ EOF
 }
 
 sub _add_websites_anno {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( 'AnnoCPAN', <<"EOF" );
 The AnnoCPAN is a website that allows community annotations of Perl module documentation.
@@ -688,7 +691,7 @@ EOF
 }
 
 sub _add_websites_ratings {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( 'CPAN Ratings', <<"EOF" );
 The CPAN Ratings is a website that allows community ratings and reviews of Perl modules.
@@ -698,7 +701,7 @@ EOF
 }
 
 sub _add_websites_forum {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( 'CPAN Forum', <<"EOF" );
 The CPAN Forum is a web forum for discussing Perl modules.
@@ -708,7 +711,7 @@ EOF
 }
 
 sub _add_websites_kwalitee {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	# TODO add link for http://perl-qa.hexten.net/wiki/index.php/Kwalitee ?
 	return _make_item( 'CPANTS', <<"EOF" );
@@ -719,7 +722,7 @@ EOF
 }
 
 sub _add_websites_testers {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	my $first_char = substr( $dist, 0, 1 );
 
@@ -731,7 +734,7 @@ EOF
 }
 
 sub _add_websites_testmatrix {
-	my( $self, $dist, $module ) = @_;
+	my $dist = shift;
 
 	return _make_item( 'CPAN Testers Matrix', <<"EOF" );
 The CPAN Testers Matrix is a website that provides a visual overview of the test results for a distribution on various Perls/platforms.
@@ -741,7 +744,7 @@ EOF
 }
 
 sub _add_websites_deps {
-	my( $self, $dist, $module ) = @_;
+	my $module = $_[1];
 
 	return _make_item( 'CPAN Testers Dependencies', <<"EOF" );
 The CPAN Testers Dependencies is a website that shows a chart of the test results of all dependencies for a distribution.
