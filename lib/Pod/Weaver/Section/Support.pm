@@ -87,8 +87,6 @@ EOPOD
 	},
 );
 
-# TODO add kobesearch to websites?
-
 =attr websites
 
 Specify what website links you want to see. This is an array, and you can pick any combination. You can also
@@ -748,11 +746,10 @@ EOF
 sub _add_websites_kwalitee {
 	my $dist = shift;
 
-	# TODO add link for http://perl-qa.hexten.net/wiki/index.php/Kwalitee ?
 	return _make_item( 'CPANTS', <<"EOF" );
 The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
 
-L<http://cpants.perl.org/dist/overview/$dist>
+L<http://cpants.cpanauthors.org/dist/overview/$dist>
 EOF
 }
 
