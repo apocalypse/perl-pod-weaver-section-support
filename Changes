@@ -3,6 +3,7 @@ Revision history for Pod::Weaver::Section::Support
 {{$NEXT}}
 
 	Documentation tweaks
+	Resolve RT#78450 - retrieve IRC information from the dzil metadata if possible ( thanks BBYRD! )
 
 1.005	2012-01-03 00:48:32 UTC
 

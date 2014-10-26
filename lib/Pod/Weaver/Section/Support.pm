@@ -153,7 +153,10 @@ EOPOD
 Specify an IRC server/channel/nick for online support. You can specify as many networks/channels as you want.
 The ordering of the options are important, as they are reflected in the final POD.
 
-You specify a network, then a list of channels/nicks to ask for support.
+You specify a network, then a list of channels/nicks to ask for support. There are two ways to format the string:
+
+	servername.com,#room,nick
+	irc://servername.com/#room
 
 The default is none.
 
@@ -161,6 +164,13 @@ The default is none.
 	[Support]
 	irc = irc.home.org, #support, supportbot
 	irc = irc.acme.com, #acmecorp, #acmehelp, #acmenewbies
+
+You can also add the irc information in the distribution metadata via L<Dist::Zilla::Plugin::Metadata>.
+Valid keys are 'x_irc' or 'IRC' but you have to use the irc:// format to retain compatibility with the rest of the ecosystem.
+
+	# in dist.ini
+	[Metadata]
+	x_irc = irc://irc.perl.org/#perl
 
 =cut
 
@@ -426,28 +436,53 @@ EOPOD
 
 sub _add_irc {
 	my $self = shift;
+	my $zilla = shift;
 
-	# Do we have anything to do?
-	return () if ! scalar @{ $self->irc };
+	my @irc;
+
+	# Did the user specify it as metadata in Dist::Zilla?
+	if ( exists $zilla->distmeta->{'x_irc'} or exists $zilla->distmeta->{'IRC'} ) {
+		die 'You specified the IRC information twice: in the metadata and in this plugin, please pick one!' if scalar @{ $self->irc };
+
+		# we follow the irc://irc.perl.org/#roomname format
+		my $x_irc = exists $zilla->distmeta->{'x_irc'} ? $zilla->distmeta->{'x_irc'} : $zilla->distmeta->{'IRC'};
+		if ( $x_irc =~ m|^irc://([^/]+)/(.+)$| ) {
+			push( @irc, "$1,$2" );
+		} else {
+			die "The IRC metadata needs to be in the proper format: 'irc://servername.com/#room' but yours was: $x_irc";
+		}
+	} else {
+		# Do we have anything to do?
+		if ( scalar @{ $self->irc } ) {
+			@irc = @{ $self->irc };
+		} else {
+			return ();
+		}
+	}
 
 	my @networks;
-	foreach my $entry ( @{ $self->irc } ) {
-		# Split it into fields
-		my @data = split( /\,/, $entry );
-		$_ =~ s/^\s+//g for @data;
-		$_ =~ s/\s+$//g for @data;
+	foreach my $entry ( @irc ) {
+		my( $net, @chans, @nicks );
+		if ( $entry =~ m|^irc://([^/]+)/(.+)$| ) {
+			$net = $1;
+			push( @chans, $2 );
+		} else {
+			# Split it into fields
+			my @data = split( /\,/, $entry );
+			$_ =~ s/^\s+//g for @data;
+			$_ =~ s/\s+$//g for @data;
 
-		# Add the network data!
-		my $net = shift @data;
-		my @chans;
-		my @nicks;
-		foreach my $e ( @data ) {
-			if ( $e =~ /^\#/ ) {
-				push( @chans, $e );
-			} else {
-				push( @nicks, $e );
+			# Add the network data!
+			$net = shift @data;
+			foreach my $e ( @data ) {
+				if ( $e =~ /^\#/ ) {
+					push( @chans, $e );
+				} else {
+					push( @nicks, $e );
+				}
 			}
 		}
+
 		my $text = "You can connect to the server at '$net'";
 		if ( @chans ) {
 			if ( @chans > 1 ) {
