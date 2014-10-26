@@ -100,7 +100,7 @@ The default is "all".
 	# Where the links go to:
 	metacpan	- http://metacpan.org/release/$dist
 	search		- http://search.cpan.org/dist/$dist
-	rt		- http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist
+	rt		- https://rt.cpan.org/Public/Dist/Display.html?Name=$dist
 	anno		- http://annocpan.org/dist/$dist
 	ratings		- http://cpanratings.perl.org/d/$dist
 	forum		- http://cpanforum.com/dist/$dist
@@ -366,7 +366,7 @@ sub _add_bugs {
 	if ( $self->bugs eq 'rt' ) {
 		my $dist = $zilla->name;
 		my $mailto = "C<bug-" . lc( $dist ) . " at rt.cpan.org>";
-		my $web = "L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=$dist>";
+		my $web = "L<https://rt.cpan.org/Public/Bug/Report.html?Queue=$dist>";
 
 		$text =~ s/\{WEB\}/$web/;
 		$text =~ s/\{EMAIL\}/$mailto/;
@@ -709,7 +709,7 @@ sub _add_websites_rt {
 	return _make_item( "RT: CPAN's Bug Tracker", <<"EOF" );
 The RT ( Request Tracker ) website is the default bug/issue tracking system for CPAN.
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=$dist>
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=$dist>
 EOF
 }
 
