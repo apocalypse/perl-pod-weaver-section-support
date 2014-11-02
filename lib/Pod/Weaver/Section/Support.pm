@@ -104,7 +104,7 @@ The default is "all".
 	anno		- http://annocpan.org/dist/$dist
 	ratings		- http://cpanratings.perl.org/d/$dist
 	forum		- http://cpanforum.com/dist/$dist
-	kwalitee	- http://cpants.perl.org/dist/overview/$dist
+	kwalitee	- http://cpants.perl.org/dist/$dist
 	testers		- http://cpantesters.org/distro/$first_char/$dist
 	testmatrix	- http://matrix.cpantesters.org/?dist=$dist
 	deps		- http://deps.cpantesters.org/?module=$module
@@ -749,7 +749,7 @@ sub _add_websites_kwalitee {
 	return _make_item( 'CPANTS', <<"EOF" );
 The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
 
-L<http://cpants.cpanauthors.org/dist/overview/$dist>
+L<http://cpants.cpanauthors.org/dist/$dist>
 EOF
 }
 
