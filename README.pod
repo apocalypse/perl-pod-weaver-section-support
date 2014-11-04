@@ -2,9 +2,8 @@
 
 =encoding UTF-8
 
-=for :stopwords Apocalypse Alex Fredric Kent Peters Randy Stauner cpan testmatrix url
-annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata
-placeholders metacpan dist dzil repo
+=for :stopwords Apocalypse cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee
+diff irc mailto metadata placeholders metacpan dist dzil repo
 
 =for Pod::Coverage weave_section mvp_multivalue_args
 
@@ -14,7 +13,7 @@ Pod::Weaver::Section::Support - Add a SUPPORT section to your POD
 
 =head1 VERSION
 
-  This document describes v1.006 of Pod::Weaver::Section::Support - released October 25, 2014 as part of Pod-Weaver-Section-Support.
+  This document describes v1.007 of Pod::Weaver::Section::Support - released November 04, 2014 as part of Pod-Weaver-Section-Support.
 
 =head1 DESCRIPTION
 
@@ -82,7 +81,7 @@ The default is "all".
 	anno		- http://annocpan.org/dist/$dist
 	ratings		- http://cpanratings.perl.org/d/$dist
 	forum		- http://cpanforum.com/dist/$dist
-	kwalitee	- http://cpants.perl.org/dist/overview/$dist
+	kwalitee	- http://cpants.perl.org/dist/$dist
 	testers		- http://cpantesters.org/distro/$first_char/$dist
 	testmatrix	- http://matrix.cpantesters.org/?dist=$dist
 	deps		- http://deps.cpantesters.org/?module=$module
@@ -119,11 +118,11 @@ The default is none.
 	irc = irc.acme.com, #acmecorp, #acmehelp, #acmenewbies
 
 You can also add the irc information in the distribution metadata via L<Dist::Zilla::Plugin::Metadata>.
-Valid keys are 'x_irc' or 'IRC' but you have to use the irc:// format to retain compatibility with the rest of the ecosystem.
+The key is 'x_IRC' but you have to use the irc:// format to retain compatibility with the rest of the ecosystem.
 
 	# in dist.ini
 	[Metadata]
-	x_irc = irc://irc.perl.org/#perl
+	x_IRC = irc://irc.perl.org/#perl
 
 =head2 irc_content
 
@@ -313,7 +312,7 @@ from your repository :)
 
 L<https://github.com/apocalypse/perl-pod-weaver-section-support>
 
-  git clone git://github.com/apocalypse/perl-pod-weaver-section-support.git
+  git clone https://github.com/apocalypse/perl-pod-weaver-section-support.git
 
 =head1 AUTHOR
 
