@@ -164,11 +164,11 @@ The default is none.
 	irc = irc.acme.com, #acmecorp, #acmehelp, #acmenewbies
 
 You can also add the irc information in the distribution metadata via L<Dist::Zilla::Plugin::Metadata>.
-Valid keys are 'x_irc' or 'IRC' but you have to use the irc:// format to retain compatibility with the rest of the ecosystem.
+The key is 'x_IRC' but you have to use the irc:// format to retain compatibility with the rest of the ecosystem.
 
 	# in dist.ini
 	[Metadata]
-	x_irc = irc://irc.perl.org/#perl
+	x_IRC = irc://irc.perl.org/#perl
 
 =cut
 
@@ -438,24 +438,23 @@ sub _add_irc {
 
 	my @irc;
 
-	# Did the user specify it as metadata in Dist::Zilla?
-	if ( exists $zilla->distmeta->{'x_irc'} or exists $zilla->distmeta->{'IRC'} ) {
-		die 'You specified the IRC information twice: in the metadata and in this plugin, please pick one!' if scalar @{ $self->irc };
-
-		# we follow the irc://irc.perl.org/#roomname format
-		my $x_irc = exists $zilla->distmeta->{'x_irc'} ? $zilla->distmeta->{'x_irc'} : $zilla->distmeta->{'IRC'};
+	# thanks to https://metacpan.org/about/metadata for the info!
+	if ( scalar @{ $self->irc } ) {
+		$self->log( 'IRC was set twice: in the metadata and in this plugin, overriding the metadata!' ) if exists $zilla->distmeta->{'x_IRC'};
+		@irc = @{ $self->irc };
+	} elsif ( exists $zilla->distmeta->{'x_IRC'} ) {
+		my $x_irc = $zilla->distmeta->{'x_IRC'};
+		if ( ref $x_irc ) { # handle the newer url/web nested spec
+			$x_irc = $x_irc->{'url'};
+		}
 		if ( $x_irc =~ m|^irc://([^/]+)/(.+)$| ) {
 			push( @irc, "$1,$2" );
 		} else {
-			die "The IRC metadata needs to be in the proper format: 'irc://servername.com/#room' but yours was: $x_irc";
-		}
-	} else {
-		# Do we have anything to do?
-		if ( scalar @{ $self->irc } ) {
-			@irc = @{ $self->irc };
-		} else {
+			$self->log( "Error: the IRC metadata needs to be in the proper format: 'irc://servername.com/#room' but yours was: $x_irc" );
 			return ();
 		}
+	} else {
+		return ();
 	}
 
 	my @networks;

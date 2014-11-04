@@ -3,6 +3,7 @@ Revision history for Pod::Weaver::Section::Support
 {{$NEXT}}
 
 	Fix the Kwalitee link so it doesn't 404 anymore
+	Tweaked how we parsed the x_IRC metadata
 
 1.006	2014-10-26 05:12:19 UTC
 
