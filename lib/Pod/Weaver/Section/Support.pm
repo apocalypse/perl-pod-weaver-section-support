@@ -4,6 +4,7 @@ package Pod::Weaver::Section::Support;
 
 use Moose 1.03;
 use Moose::Autobox 0.10;
+use PPIx::DocumentName;
 
 with 'Pod::Weaver::Role::Section' => { -version => '3.100710' };
 
@@ -316,7 +317,7 @@ sub weave_section {
 			command => 'head1',
 			content => 'SUPPORT',
 			children => [
-				$self->_add_perldoc( $zilla ),
+				$self->_add_perldoc( $input->{ppi_document} ),
 				$self->_add_websites( $zilla ),
 				$self->_add_email( $zilla ),
 				$self->_add_irc( $zilla ),
@@ -401,17 +402,13 @@ sub _add_bugs {
 }
 
 sub _add_perldoc {
-	my( $self, $zilla ) = @_;
+	my( $self, $ppi_doc ) = @_;
 
 	# Do we have anything to do?
 	return () if ! $self->perldoc;
 
-	# Don't use $zilla->name as some dists' name is different from the actual module...
-	# TODO what if user specified $self->all_modules( 1 )? should this use the current filename?
-	my $main_module = $zilla->main_module->name;
-	$main_module =~ s|^lib/||i;
-	$main_module =~ s/\.pm$//;
-	$main_module =~ s|/|::|g;
+	# Get the name for the module
+	my $module = PPIx::DocumentName->extract( $ppi_doc );
 
 	# TODO add language detection as per RT#63726
 
@@ -426,7 +423,7 @@ EOPOD
 
 			} ),
 			Pod::Elemental::Element::Pod5::Verbatim->new( {
-				content => "  perldoc $main_module",
+				content => "  perldoc $module",
 			} ),
 		],
 	} );
