@@ -3,7 +3,6 @@ package Pod::Weaver::Section::Support;
 # ABSTRACT: Add a SUPPORT section to your POD
 
 use Moose 1.03;
-use Moose::Autobox 0.10;
 
 with 'Pod::Weaver::Role::Section' => { -version => '3.100710' };
 
@@ -299,10 +298,9 @@ sub weave_section {
 		return if $zilla->main_module->name ne $input->{filename};
 	}
 
-	$document->children->push(
-		# Add the stopwords so the spell checker won't complain!
-		# TODO make this smarter so it loads only the stopwords we need for specific sections... ohwell
-		Pod::Elemental::Element::Pod5::Region->new( {
+	# Add the stopwords so the spell checker won't complain!
+	# TODO make this smarter so it loads only the stopwords we need for specific sections... ohwell
+	push @{ $document->children }, Pod::Elemental::Element::Pod5::Region->new( {
 			format_name => 'stopwords',
 			is_pod => 1,
 			content => '',
@@ -311,8 +309,8 @@ sub weave_section {
 					content => join( " ", qw( cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan ) ),
 				} ),
 			],
-		} ),
-		Pod::Elemental::Element::Nested->new( {
+	} ),
+	Pod::Elemental::Element::Nested->new( {
 			command => 'head1',
 			content => 'SUPPORT',
 			children => [
@@ -323,8 +321,7 @@ sub weave_section {
 				$self->_add_bugs( $zilla, $input->{'distmeta'} ),
 				$self->_add_repo( $zilla ),
 			],
-		} ),
-	);
+	} );
 }
 
 sub _add_email {
