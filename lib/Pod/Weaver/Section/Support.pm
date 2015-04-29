@@ -98,7 +98,7 @@ Valid options are: "none", "metacpan", "search", "rt", "anno", "ratings", "forum
 The default is "all".
 
 	# Where the links go to:
-	metacpan	- http://metacpan.org/release/$dist
+	metacpan	- https://metacpan.org/release/$dist
 	search		- http://search.cpan.org/dist/$dist
 	rt		- https://rt.cpan.org/Public/Dist/Display.html?Name=$dist
 	anno		- http://annocpan.org/dist/$dist
@@ -688,7 +688,7 @@ sub _add_websites_metacpan {
 	return _make_item( 'MetaCPAN', <<"EOF" );
 A modern, open-source CPAN search engine, useful to view POD in HTML format.
 
-L<http://metacpan.org/release/$dist>
+L<https://metacpan.org/release/$dist>
 EOF
 }
 
